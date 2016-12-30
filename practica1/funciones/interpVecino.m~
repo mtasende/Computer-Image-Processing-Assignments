@@ -1,0 +1,7 @@
+function yr=interpVecino(x,I)
+%Se le pasa una x en coordenadas homogeneas y devuelve la xr que interpola,
+%según la imagen I, con el vecino más cercano
+
+yr = I(x(2),x(1));
+
+

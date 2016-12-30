@@ -1,0 +1,22 @@
+function yr=interpBilineal(I,x)
+%Se le pasa una x en coordenadas homogeneas y devuelve la yr=I(x) que interpola,
+%según la imagen I, con interpolación bilineal
+
+%Identifico los cuatro puntos involucrados de la imagen
+v11 = [floor(x(2)) floor(x(1))];
+v12 = [floor(x(2)) ceil(x(1))];
+v21 = [ceil(x(2)) floor(x(1))];
+v22 = [ceil(x(2)) ceil(x(1))];
+
+i = x(2);
+j = x(1);
+
+yr11 = I(v11(1),v11(2))*fi(i-v11(1))*fi(j-v11(2))-j),0]);
+yr12 = I(v12(1),v12(2))*max([1-abs(v12(1)-i),0])*max([1-abs(v12(2)-j),0]);
+yr21 = I(v21(1),v21(2))*max([1-abs(v21(1)-i),0])*max([1-abs(v21(2)-j),0]);
+yr22 = I(v22(1),v22(2))*max([1-abs(v22(1)-i),0])*max([1-abs(v22(2)-j),0]);
+
+yr = yr11 + yr12 + yr21 + yr22;
+
+function y=fi(t)
+y = max([1-abs(t),0]);

@@ -1,0 +1,15 @@
+function dibujarLineas(rho,theta,x,centro)
+%rho y theta pueden ser escalares o vectores del mismo tamanio
+
+N = length(rho);
+thetaR = pi*theta/180;
+
+for i=1:N
+    y = ((-1/tan(thetaR(i)))*(centro(1)-x)+(rho(i)/sin(thetaR(i))))+centro(2);
+    %keyboard
+    plot(x,y);
+    %plot(x,-tan(thetaR(i))*(centro(1)-x)+((rho(i)/cos(thetaR(i)))+centro(2))*ones(size(x)));
+    hold on
+end
+hold off
+

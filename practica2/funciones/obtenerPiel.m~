@@ -1,0 +1,16 @@
+function imResultado=obtenerPiel(imagen,datosBase,umbral)
+
+rBase = reshape(datosBase(:,:,1),[],1);
+gBase = reshape(datosBase(:,:,2),[],1);
+bBase = reshape(datosBase(:,:,3),[],1);
+vecBase = [rBase gBase bBase];
+
+r = reshape(imagen(:,:,1),[],1);
+g = reshape(imagen(:,:,2),[],1);
+b = reshape(imagen(:,:,3),[],1);
+vec = [r g b];
+
+dist = mahal(vec,vecBase);
+
+rRes = r()
+

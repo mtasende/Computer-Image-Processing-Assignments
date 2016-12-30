@@ -1,0 +1,30 @@
+clc
+clear all
+close all
+
+% imagen = imread('../imagenes/lena.bmp');
+% nivel = marchSquares(imagen,100,3);
+% 
+% figure
+% map = [ones(150,1)*[0 1 0]; ones(106,1)*[1 1 1]];
+% imshow(nivel,[0 255],'Colormap',map); title('Marching Sqares implementado')
+% figure
+% contour(flipud(imagen),[100 100]);title('Contour')
+
+
+
+figure
+A = zeros(10,10);
+A(3:5,3:5)=1;
+A(6,6)=0.6;
+A(2,6)=1.7;
+A(2,2)=0.6;
+A(6,2)=1.6;
+%imshow(A)
+imagesc(A)
+figure
+umbral = 0.5;
+nivel = marchSquares(A,umbral,10);
+
+%imshow(nivel,[0 255]);
+imagesc(nivel)

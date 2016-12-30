@@ -1,0 +1,9 @@
+function imRes=centrarImagen(lienzo,imagen)
+
+[M N] = size(lienzo);
+[m n] = size(imagen);
+
+if m>M || n>N
+    disp()
+
+verticeSI = [floor((M-m)/2)]

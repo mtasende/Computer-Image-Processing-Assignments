@@ -1,0 +1,22 @@
+clc
+clear all
+close all
+
+imagen = imread('../imagenes/lena.bmp');
+nivel = marchSquares(imagen,100,8);
+
+subplot(1,2,1)
+imshow(nivel,[0 255]); title('Marching Sqares implementado')
+subplot(1,2,2)
+[c h]=contour(flipud(imagen),[100 100]); title('Contour')
+
+
+% 
+% figure
+% A = zeros(5,5);
+% A(2:4,2:4)=1;
+% umbral = 0.5;
+% nivel = marchSquares(A,umbral,100);
+% 
+% imshow(nivel,[0 255]);
+

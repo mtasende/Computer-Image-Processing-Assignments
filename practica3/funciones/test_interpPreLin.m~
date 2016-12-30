@@ -1,0 +1,8 @@
+clc
+clear all
+close all
+
+A = zeros(10,10);
+A(2,2) = 1;
+A(2,3) = 2
+

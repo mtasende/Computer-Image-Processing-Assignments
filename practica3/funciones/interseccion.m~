@@ -1,0 +1,6 @@
+function X=interseccion(r1,th1,r2,th2)
+
+X = [cos(th1) sin(th1);cos(th2) sin(th2)]\[r1;r2];
+
+x = X(1);
+y = X(2);

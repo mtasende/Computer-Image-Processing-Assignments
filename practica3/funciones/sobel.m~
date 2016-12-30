@@ -1,0 +1,24 @@
+function imaRes = sobel(imagen,p)
+%p es el porcentaje de "magnitudes" que me quedo para el umbral
+%p=-1 para default
+
+filtroH = [-1 0 1;-2 0 2;-1 0 1];
+filtroV = [-1 -2 -1;0 0 0;1 2 1];
+
+
+imaTemp = sqrt(conv2(double(imagen),filtroH,'same').^2 + conv2(double(imagen),filtroV,'same').^2);
+
+%umbral = sqrt(4*mean2(imaTemp));
+%Me quedo con p% magnitudes
+if(p==-1)
+    pInterno = 0.1;
+else
+    pInterno = p;
+end
+
+ordenado = sort(imaTemp(:));
+umbral = ordenado(floor(length(ordenado)*(1-pInterno)));
+
+%imaRes = uint8(imaTemp.*(imaTemp>umbral));
+imaRes = uint8(255*(imaTemp>umbral));
+imaRes = imaRes(1:size(imaRes,1)-1,1:size(imaRes,2)-1); %Saco

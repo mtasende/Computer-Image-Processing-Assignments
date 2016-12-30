@@ -1,0 +1,78 @@
+clc
+clear all
+close all
+
+imag1 = imread('centro.jpg'); %centro
+imag1 = double(rgb2gray(imag1));
+imag2 = imread('izquierda.jpg'); %izquierda
+imag2 = double(rgb2gray(imag2));
+imag3 = imread('derecha.jpg'); %derecha
+imag3 = double(rgb2gray(imag3));
+
+figure
+imshow(imag1,[0 255])
+[x,y]=getpts;
+puntos1 = [x(1) x(2) x(3) x(4);y(1) y(2) y(3) y(4);1 1 1 1];
+
+imshow(imag2,[0 255])
+[x,y]=getpts;
+puntos2 = [x(1) x(2) x(3) x(4);y(1) y(2) y(3) y(4);1 1 1 1];
+
+imshow(imag3,[0 255])
+[x,y]=getpts;
+puntos3 = [x(1) x(2) x(3) x(4);y(1) y(2) y(3) y(4);1 1 1 1];
+
+H21 = calcularHomografia(puntos2,puntos1); %Homografía que me lleva los puntos2 en puntos1
+H31 = calcularHomografia(puntos3,puntos1); %Homografía que me lleva los puntos3 en puntos1
+
+imag21 = transformar(imag2,H21,'vecino','si');
+imag31 = transformar(imag3,H31,'vecino','si');
+
+%Debería trasladar los puntos elegidos extremos al borde...
+
+%Pongo los puntos notables en cada imagen
+puntos1T = round(puntos1);
+puntos2T = round(H21*puntos2);
+puntos3T = round(H31*puntos3);
+imag21P = imag21;
+imag31P = imag31;
+imag1P = imag1;
+for i = 1:4
+    imag21P(puntos2T(2,i),puntos2T(1,i)) = 1000;
+    imag1P(puntos1T(2,i),puntos1T(1,i)) = 1000;
+    imag31P(puntos3T(2,i),puntos3T(1,i)) = 1000;
+end
+
+
+subplot(1,3,1)
+imagesc(imag21P)
+subplot(1,3,2)
+imagesc(imag1P,[0 255])
+subplot(1,3,3)
+imagesc(imag31P,[0 255])
+
+%Trasladar las imágenes a una nueva
+%Primero creo un "lienzo" grande
+M1 = length(imag1(:,1));
+M2 = length(imag2(:,1));
+M3 = length(imag3(:,1));
+N1 = length(imag1(1,:));
+N2 = length(imag2(1,:));
+N3 = length(imag3(1,:));
+
+Mres = round(max([M1 M2 M3])*1.6);
+res = 255*ones(Mres,(N1+N2+N3)); %La unión debería ser menor en las j (x), pero puede haber desfasajes en las i (y)
+ini1 = round((Mres/2)-(M2/2));
+res(ini1+1:ini1+M1,N2+1:N2+N1) = imag1;
+figure
+imshow(res,[0 255])
+
+j1izq = round(min(puntos1(1,:)));
+j1der = round(max(puntos1(1,:)));
+j2der = round(min(puntos2T(1,:)));
+j3izq = round(max(puntos3T(1,:)))
+
+res(ini1+1:ini1+length(imag21(:,1)),N2+j1izq-j2der+1:N2+j1izq) = imag21(:,1:j2der);
+res(ini1+1:ini1+length(imag31(:,1)),N2+j1der+1:N2+j1der+length(imag31(1,:))-j3izq) = imag31(:,j3izq:length(imag31(1,:)));
+figure
+imshow(res,[0 255])

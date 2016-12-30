@@ -1,0 +1,5 @@
+function res = filtroMedia(imagen,n)
+
+[M,N] = size(imagen);
+
+imTemp = zeros(M+2*n,N+)

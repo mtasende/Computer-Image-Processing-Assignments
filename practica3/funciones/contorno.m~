@@ -1,0 +1,19 @@
+function imaRes=contorno(imagen,K)
+
+[M N] = size(imagen);
+
+imaRes = zeros(M,N);
+
+for i=1:M %Puntos de entrada
+    jIzq(i,:) = find(imagen(i,:),K,'first');
+    jDer(i,:) = find(imagen(i,:),K,'last');
+    imaRes(i,jIzq(i,:)) = imagen(i,jIzq(i,:));
+    imaRes(i,jDer(i,:)) = imagen(i,jDer(i,:));
+end
+
+for j=1:N %Puntos de entrada
+    jArriba(:,j) = find(imagen(:,j),K,'first');
+    jAbajo(:,j) = find(imagen(:,j),K,'last');
+    imaRes(jArriba(:),j) = imagen(jArriba(j,:),j);
+    imaRes(jAbajo(j,:)) = imagen(jAbajo(j,:),j);
+end

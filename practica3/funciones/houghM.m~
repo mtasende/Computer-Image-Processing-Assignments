@@ -1,0 +1,26 @@
+function [matrizH,rho,thetaS]=houghM(imagen,dRho,theta)
+%Dejo el origen a la iquierda arriba, asi que para tener todo el espacio,
+%theta tiene que ir de 0 a 360.
+%theta tiene que ser un vector fila
+
+[m n]=size(imagen);
+M = floor(norm([m n])/dRho); %La diagonal del rectangulo de la imagen, dividida por el paso de Rho
+N = length(theta);
+H = zeros(M,N); %Rho en las filas, theta en las columnas
+
+rho = 0:dRho:M;
+thetaS = theta;
+
+thetaRad = theta*pi/180;
+
+for i=1:m
+    for j=1:n
+        if(imagen(i,j)>0) %Es un punto de borde
+            %tomo x=i, y=j. Es decir que los ejes quedan rotados
+            r = i*cos(thetaRad) + j*sin(thetaRad); %theta es un vector fila
+            %Calculo en que celda de rho quedan esos
+            sumarR = histc(r,rho);
+            H(:,)
+        end
+    end
+end

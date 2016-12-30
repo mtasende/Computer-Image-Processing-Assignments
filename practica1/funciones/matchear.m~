@@ -1,0 +1,20 @@
+function imRes = matchear(imagen,patron)
+
+%Image Processing
+patronG = 255*ones(length(imagen(:,1)),length(imagen(1,:)));
+patronG(1:length(patron(:,1)),1:length(patron(1,:))) = patron;
+
+res = ifft2(conj(fft2(double(patronG)))  .* fft2(double(escan)));
+umbral = max(max(res))*0.99964;
+
+imBlanco = zeros(length(escan(:,1)),length(escan(1,:)));
+figure
+for i=1:length(escan(:,1))
+    for j=1:length(escan(1,:))
+        if(real(res(i,j)) >=umbral)
+            imBlanco(i:i+length(imageProcessing(:,1)),j:j+7*length(imageProcessing(:,1))) = double(escan(i:i+length(imageProcessing(:,1)),j:j+7*length(imageProcessing(:,1))));
+        end
+    end
+end
+
+

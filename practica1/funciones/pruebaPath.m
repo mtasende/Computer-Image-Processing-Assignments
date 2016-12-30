@@ -1,0 +1,3 @@
+function pruebaPath()
+
+disp('probando')

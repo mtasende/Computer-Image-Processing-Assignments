@@ -1,0 +1,22 @@
+%---------------------Inicialización------------------------
+clc
+clear all
+close all
+
+os = 'lin';
+
+if(os=='win')
+    addpath('.','..\funciones','..\imagenes');
+else
+    addpath('.','../funciones','../imagenes');
+end
+%----------------------------------------------------------
+
+%ej1
+disp('')
+pause
+%ej2
+%ej3
+%ej4
+ej5
+%ej6

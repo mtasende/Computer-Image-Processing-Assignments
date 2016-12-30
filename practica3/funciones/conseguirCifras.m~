@@ -1,0 +1,16 @@
+function conseguirCifras(nombreImagen)
+
+imagen = rgb2gray(imread(nombreImagen));
+
+figure(1)
+imshow(imagen)
+for i=1:8
+    V = ginput(2);
+    
+    
+    figure(2)
+    subplot(2,4,i)
+    
+    
+end
+

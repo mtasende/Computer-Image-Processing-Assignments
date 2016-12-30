@@ -1,0 +1,52 @@
+%ej4_conseguirPuntos
+
+clc
+clear all
+close all
+
+
+imag1 = imread('1viewfigs-keble.000.bmp'); %izquierda
+imag1 = double(rgb2gray(imag1));
+imag2 = imread('1viewfigs-keble.003.bmp'); %centro
+imag2 = double(rgb2gray(imag2));
+imag3 = imread('1viewfigs-keble.006.bmp'); %derecha
+imag3 = double(rgb2gray(imag3));
+
+%Voy a establecer un lienzo comun, con sistema de coordenadas comun
+M = size(imag1,1) + size(imag2,1) + size(imag3,1);
+N = size(imag1,2) + size(imag2,2) + size(imag3,2);
+
+ima1grande = centrarImagen(zeros(M,N),imag1);
+ima2grande = centrarImagen(zeros(M,N),imag2); %Esta es la unica importante, para que quede centrada
+ima3grande = centrarImagen(zeros(M,N),imag3);
+%-------------------------------------------------------------------
+
+load puntos
+
+H12 = calcularHomografia(puntos1,puntos2); %Homografía que me lleva los puntos1 en puntos2
+H32 = calcularHomografia(puntos3,puntos2); %Homografía que me lleva los puntos3 en puntos2
+
+disp('Homografias calculadas. Realizando transformacion 1')
+tic
+imag12 = transformarZ(ima1grande,H12,'vecino','no');
+toc
+imag22 = ima2grande; %No la cambio
+disp('Realizando transformacion 2')
+tic
+imag32 = transformarZ(ima3grande,H32,'vecino','no');
+toc
+
+figure
+subplot(1,3,1)
+imshow(imag12,[0 255])
+subplot(1,3,2)
+imshow(imag22,[0 255])
+subplot(1,3,3)
+imshow(imag32,[0 255])
+
+panoramica = max(imag12,imag22);
+panoramica = max(panoramica,imag32);
+
+figure
+imshow(panoramica,[0 255])
+

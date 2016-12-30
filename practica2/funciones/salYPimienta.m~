@@ -1,0 +1,7 @@
+function res = salYPimienta(imagen,p)
+
+[M,N] = size(imagen);
+
+aleat = rand(M,N);
+res = imagen.*(aleat>=p/2).*255*(aleat>=(1-(p/2)));
+

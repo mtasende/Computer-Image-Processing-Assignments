@@ -1,0 +1,4 @@
+function imRes=subMuestreo(imagen,n)
+
+for i = 1:length(imagen())
+imRes = imagen()

@@ -1,0 +1,129 @@
+%Script para conseguir las graficas en el espacio RGB
+clc
+clear all
+close all
+
+addpath('.','../funciones','../imagenes/muct');
+
+archivosIma = dir('../imagenes/muct/i*qa-*n.jpg');
+
+N = length(archivosIma);
+
+%---Cargo los datos de landmarks-----------
+file = fopen('../imagenes/muct/muct76-opencv.csv');
+L = 76*2 + 1;
+format = '%s';
+for i=1:L
+    format = [format '%s'];
+end
+brutos = textscan(file,format,'Delimiter',',');
+fclose(file);
+
+nombres=brutos{1}(2:end,:);
+
+indices = zeros(N,1);
+%Calculo los indices de las imagenes que tengo
+for i = 1:N
+    indices(i) = -1;
+    for k=1:length(nombres)
+        if(nombres{k}==archivosIma(i).name(1:end-4))
+            indices(i) = k;
+            break;
+        end
+    end
+end
+
+% tamTotal = length(brutos{3});
+% datos = zeros(tamTotal-1,length(brutos)-2);
+% for j=3:length(brutos)
+%     for i=2:tamTotal
+%         datos(i-1,j-2) = str2double(brutos{j}{i});
+%     end
+% end 
+datos = csvread('../imagenes/muct/muct76-opencv.csv',1,2);
+%------------------------------------------
+
+pielAcum = [];
+for i = 1:length(archivosIma)
+    imagen = imread(archivosIma(i).name);
+    r = imagen(:,:,1);
+    g = imagen(:,:,2);
+    b = imagen(:,:,3);
+    
+    [Ly,Lx] = size(r);
+    
+    %Consigo los landmarks
+    datosReshaped = reshape(datos(indices(i),:),2,[]);
+    %Elimino ceros dobles
+    clear x y
+    for j=1:length(datosReshaped(1,:))
+        if(datosReshaped(1,j)~=0 || datosReshaped(2,j)~=0)
+            x(j) = round(datosReshaped(1,j));
+            y(j) = round(datosReshaped(2,j));
+        end
+    end
+    %figure
+    
+        %Antes de inpolygon intentar ver los puntos solos
+%     imagenPiel(:,:,1) = r;
+%     imagenPiel(:,:,2) = g;
+%     imagenPiel(:,:,3) = b;
+%     for k=1:length(x)
+%         imagenPiel(y(k),x(k),1) = 1000;
+%         imagenPiel(y(k),x(k),2) = 1000;
+%         imagenPiel(y(k),x(k),3) = 1000;
+%     end
+    
+    xima = 1:Lx;
+    yima = 1:Ly;
+    [xx yy] = meshgrid(xima,yima); 
+    rPiel = inpolygon(xx,yy,x,y);
+    gPiel = inpolygon(xx,yy,x,y);
+    bPiel = inpolygon(xx,yy,x,y);
+    imagenPiel(:,:,1) = r.*uint8(rPiel);
+    imagenPiel(:,:,2) = g.*uint8(gPiel);
+    imagenPiel(:,:,3) = b.*uint8(bPiel);
+
+    if(i==1)
+        figure
+        subplot(1,2,1)        
+        imshow(imagen)
+        subplot(1,2,2)        
+        imshow(imagenPiel)  
+    end
+    
+    %rPiel = getPiel(r,g,b);
+
+    [m,n] = size(r);
+
+    %rvec = reshape(r,[],1);
+    %gvec = reshape(g,[],1);
+    %bvec = reshape(b,[],1);
+    
+    rPielVec = reshape(imagenPiel(:,:,1),[],1);
+    gPielVec = reshape(imagenPiel(:,:,2),[],1);
+    bPielVec = reshape(imagenPiel(:,:,3),[],1);
+    
+    pielAcum = [pielAcum; [rPielVec gPielVec bPielVec]];
+    
+    %plot3(rPielVec,gPielVec,bPielVec,'b.')
+    %hold on
+    
+    disp([num2str(i*100/length(archivosIma)) '%'])
+end
+
+%Elimino el fondo negro del acumulado de piel
+rPielFinal = pielAcum((pielAcum(:,1)~=0 | pielAcum(:,2)~=0 | pielAcum(:,3)~=0 ),1);
+gPielFinal = pielAcum((pielAcum(:,1)~=0 | pielAcum(:,2)~=0 | pielAcum(:,3)~=0 ),2);
+bPielFinal = pielAcum((pielAcum(:,1)~=0 | pielAcum(:,2)~=0 | pielAcum(:,3)~=0 ),3);
+
+figure
+plot3(rPielFinal,gPielFinal,bPielFinal,'b.')
+xlabel('R')
+ylabel('G')
+zlabel('B');
+grid on
+
+save('pielFinal.mat','rPielFinal','gPielFinal','bPielFinal');
+
+

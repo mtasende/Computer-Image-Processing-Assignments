@@ -1,0 +1,73 @@
+clc
+clear all
+close all
+
+%I = imread('lena.bmp');
+%ima = rgb2gray(imread('miCI1chica.jpg'));
+%ima = rgb2gray(imread('miCI5chica.jpg'));
+ima = imread('oclusion.bmp');
+
+%imaSobel = edge(rotI,'sobel'); % Implementar esto
+
+imaSobel = sobel(ima,-1);
+
+%imaSobel = imread('para_etiquetar.bmp');%Test
+
+imshow(imaSobel)
+figure
+
+theta = -90:1:90;
+%theta = [-90:3:-85 -2:3:3 85:3:89];
+dRho = 1;
+
+[matrizH,rho,theta] = houghM(imaSobel,dRho,theta);
+
+surf(matrizH)
+figure
+
+%umbral = input('Elija el umbral =');
+
+%Esto muestra las sinusoides y los puntos de corte con mas cruces
+imshow(matrizH,[],'XData',theta,'YData',rho,'InitialMagnification','fit');
+xlabel('\theta'), ylabel('\rho');
+axis on, axis normal, hold on;
+Hordenados = sort(matrizH(:));
+%umbral = Hordenados(floor(0.9*length(Hordenados)));
+%umbral = ceil(0.45*max(matrizH(:)));
+umbral = ceil(0.3*max(matrizH(:)));
+%umbral = 75;
+
+P = picosHough(matrizH,umbral,2000);
+th = theta(P(:,2)); 
+r = rho(P(:,1));
+plot(th,r,'s','color','white');
+
+figure
+imshow(imaSobel)
+hold on
+[M N]=size(imaSobel); %x,y maximas
+
+centro = [round(N/2) round(M/2)];
+dibujarLineas(r,th,1:N,centro)
+% for k=1:length(th)
+%     if(th(k)>45 || th(k)<-45)
+%         x = 1:M;
+%         y = (-1/tan((pi/180)*th(k)))*(round(M/2)-x)+r(k)/sin((pi/180)*th(k))+round(N/2);
+%         puntos = [x' y'];
+%         %keyboard
+%         %puntos = puntos((y<=N)&(y>0),:);
+%         if(size(puntos,1)>0)
+%             plot(puntos(:,2),puntos(:,1),'LineWidth',2,'Color','green');
+%         end
+% %     else
+% %         x = 1:N;
+% %         y = -tan((pi/180)*th(k))*(x-round(N/2))+r(k)/cos((pi/180)*th(k))+round(M/2);
+% %         puntos = [x' y'];
+% %         if(size(puntos,1)>0)
+% %             plot(puntos(:,1),puntos(:,2),'LineWidth',2,'Color','green');
+% %         end
+%     end
+% end
+
+
+

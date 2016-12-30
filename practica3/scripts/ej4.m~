@@ -1,0 +1,54 @@
+clc
+clear all
+close all
+
+%imTest = imread('lena.bmp');
+%imTest = imread('retina.bmp');
+%imTest = rgb2gray(imread('cedula1.jpg'));
+imTest = rgb2gray(imread('miCI2chica.jpg'));
+%imTest = rgb2gray(imread('miCI3chica.jpg'));
+[imRes,umbral] = otsu(imTest);
+
+imRes = 1-imRes;
+figure
+subplot(1,2,1)
+imagesc(imTest)
+subplot(1,2,2)
+imagesc(imRes)
+
+original = imRes;
+se = strel('square',3);
+afterOpening = imerode(original,se);
+figure, imshow(original), figure, imshow(afterOpening,[])
+
+
+tic
+[imRes2,clases]=etiquetar(afterOpening,8);
+toc
+
+figure
+subplot(1,2,1)
+imagesc(afterOpening)
+subplot(1,2,2)
+imagesc(log(imRes2))
+
+
+%El ejercicio termino, pero lo de abajo es un ajuste manual para ver que
+%los numeros quedaron en regiones distintas (ver que tengan color
+%distinto). Es por un problema de escala (hay muchos colores y muy distantes)
+M = length(clases);
+
+bordes = (0:M+1)-0.5;
+prueba = imRes2(275:335,200:700);
+%histo = histc(imRes2(:),bordes); %M+1 elementos
+histo = histc(prueba(:),bordes); %M+1 elementos
+histograma = histo(1:end-1)'; %Descarto el ultimo valor
+enRango = histograma>30 & histograma<200;
+
+imRes3 = imRes2.*(enRango(uint16(imRes2+1)));
+
+figure
+subplot(1,2,1)
+imagesc(afterOpening)
+subplot(1,2,2)
+imagesc(50*log(imRes3))

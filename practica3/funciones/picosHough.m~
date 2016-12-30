@@ -1,0 +1,10 @@
+function picos=picosHough(matrizH,umbral,Nmax)
+%Devuelve una lista de coordenadas (rho,theta) con los picos encontrados
+
+[m n] = size(matrizH);
+z = find(matrizH>umbral);
+y=ceil(z/m);
+x=z-(t-1)*m;
+
+
+
